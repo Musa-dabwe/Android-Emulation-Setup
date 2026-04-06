@@ -402,7 +402,7 @@ Save and close the file when done.
 First, set the `ANDROID_AVD_HOME` variable so the emulator knows where your AVD files are:
 
 ```bash
-export ANDROID_AVD_HOME=$HOME/.config/.android/avd/
+export ANDROID_AVD_HOME=$HOME/.android/avd/
 ```
 
 Then launch the emulator:
