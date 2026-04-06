@@ -355,7 +355,7 @@ The AVD files live in `~/.config/.android/avd/` (or `~/.android/avd/` on some sy
 This step is optional but highly recommended. The AVD's config file lets you tweak hardware settings.
 
 ```bash
-nano ~/.config/.android/avd/android-9.avd/config.ini
+nano ~/.android/avd/android-9.avd/config.ini
 ```
 
 ### Recommended tweaks
