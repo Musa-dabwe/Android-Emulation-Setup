@@ -1,6 +1,6 @@
 # Android Emulation Setup (CLI Only)
 
-A complete, annoyingly detailed guide to setting up an Android emulator from scratch using only command-line tools on Linux. No Android Studio. No GUI. Just the terminal.
+A complete guide to setting up an Android emulator from scratch using only command-line tools on Linux. No Android Studio. No GUI. Just the terminal.
 
 ---
 
