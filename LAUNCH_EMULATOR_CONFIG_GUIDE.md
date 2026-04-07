@@ -1,6 +1,6 @@
 # launch_emulator.py — Configuration Guide
 
-A very detailed guide to configuring, understanding, and running the `launch_emulator.py` script. Every line explained. No assumptions made.
+A detailed guide to configuring, understanding, and running the `launch_emulator.py` script. Every line explained. No assumptions made.
 
 ---
 
@@ -124,7 +124,7 @@ This is the only part of the script you ever need to touch. It lives at the very
 ```python
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
 ANDROID_HOME     = os.path.expanduser("~/android-sdk")
-ANDROID_AVD_HOME = os.path.expanduser("~/.config/.android/avd/")
+ANDROID_AVD_HOME = os.path.expanduser("~/.android/avd/")
 AVD_NAME         = "android-9"
 SCALE            = "0.6"
 EXTRA_FLAGS      = ["-no-audio"]
@@ -176,7 +176,7 @@ ANDROID_HOME = "/media/musa/external/android-sdk"
 ### ANDROID_AVD_HOME
 
 ```python
-ANDROID_AVD_HOME = os.path.expanduser("~/.config/.android/avd/")
+ANDROID_AVD_HOME = os.path.expanduser("~/.android/avd/")
 ```
 
 **What it is:** The directory where your Android Virtual Device (AVD) configuration files are stored. When you created your AVD with `avdmanager`, it saved two things here: a `.ini` file and a `.avd/` folder, both named after your device.
@@ -184,7 +184,7 @@ ANDROID_AVD_HOME = os.path.expanduser("~/.config/.android/avd/")
 **How to verify the correct path:** Run:
 
 ```bash
-ls ~/.config/.android/avd/
+ls ~/.android/avd/
 ```
 
 You should see something like:
@@ -197,14 +197,14 @@ android-9.ini
 If that directory is empty or doesn't exist, try the alternative location:
 
 ```bash
-ls ~/.android/avd/
+ls ~/.config/.android/avd/
 ```
 
-Some Linux distributions store AVD files in `~/.android/avd/` instead of `~/.config/.android/avd/`. If your files are there, update the variable:
+Some Linux distributions store AVD files in `~/.config/.android/avd/` instead of `~/.android/avd/`. If your files are there, update the variable:
 
 ```python
 # Alternative location used on some distros
-ANDROID_AVD_HOME = os.path.expanduser("~/.android/avd/")
+ANDROID_AVD_HOME = os.path.expanduser("~/.config/.android/avd/")
 ```
 
 **Why this variable is needed:** Without it, the emulator looks for AVD files in a default location that may not match where `avdmanager` saved them. Setting it explicitly prevents "AVD not found" errors at launch time.
@@ -230,7 +230,7 @@ Look for the `Name:` field in the output:
 ```
 Available Android Virtual Devices:
     Name: android-9         ← this is your AVD_NAME
-    Path: /home/musa/.config/.android/avd/android-9.avd
+    Path: /home/musa/.android/avd/android-9.avd
   Target: Default Android System Image
 Based on: Android 9.0 ("Pie") Tag/ABI: default/x86_64
 ```
@@ -514,7 +514,7 @@ EXTRA_FLAGS = ["-verbose", "-show-kernel"]
 
 ## Common Errors and Fixes
 
-### `ERROR: AVD 'android-9' not found at /home/musa/.config/.android/avd/android-9.avd`
+### `ERROR: AVD 'android-9' not found at /home/musa/.android/avd/android-9.avd`
 
 **Cause:** Either `AVD_NAME` is wrong, or `ANDROID_AVD_HOME` is pointing to the wrong directory.
 
