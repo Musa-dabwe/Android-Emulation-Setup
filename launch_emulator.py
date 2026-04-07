@@ -6,7 +6,7 @@ import sys
 
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
 ANDROID_HOME     = os.path.expanduser("~/android-sdk")
-ANDROID_AVD_HOME = os.path.expanduser("~/.config/.android/avd/")
+ANDROID_AVD_HOME = os.path.expanduser("~/.android/avd/")
 AVD_NAME         = "android-9"       # change to your AVD name
 SCALE            = "0.6"
 EXTRA_FLAGS      = ["-no-audio"]     # add/remove flags as needed
