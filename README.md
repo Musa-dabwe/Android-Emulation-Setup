@@ -340,13 +340,13 @@ You should see output like:
 ```
 Available Android Virtual Devices:
     Name: android-9
-    Path: /home/youruser/.config/.android/avd/android-9.avd
+    Path: /home/youruser/.android/avd/android-9.avd
   Target: Default Android System Image
 Based on: Android 9.0 ("Pie") Tag/ABI: default/x86_64
   Sdcard: 512 MB
 ```
 
-The AVD files live in `~/.config/.android/avd/` (or `~/.android/avd/` on some systems).
+The AVD files live in `~/.android/avd/` (or `~/.config/.android/avd/` on some systems).
 
 ---
 
@@ -566,9 +566,9 @@ sdkmanager --update
 The AVD was not created successfully, or `ANDROID_AVD_HOME` is pointing to the wrong place. Check:
 
 ```bash
-ls ~/.config/.android/avd/
-# or
 ls ~/.android/avd/
+# or
+ls ~/.config/.android/avd/
 ```
 
 If the `.avd` folder and `.ini` file are there, just make sure `ANDROID_AVD_HOME` is set to the correct path.
@@ -637,7 +637,7 @@ Add these lines to your `~/.bashrc` or `~/.zshrc` so everything persists across 
 ```bash
 # Android SDK
 export ANDROID_HOME=~/android-sdk
-export ANDROID_AVD_HOME=$HOME/.config/.android/avd/
+export ANDROID_AVD_HOME=$HOME/.android/avd/
 export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 export PATH=$PATH:$ANDROID_HOME/emulator
