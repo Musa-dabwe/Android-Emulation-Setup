@@ -1,31 +1,237 @@
-# launch_emulator.py — Configuration Guide
+# Android Scripts — Configuration Guide
 
-A detailed guide to configuring, understanding, and running the `launch_emulator.py` script. Every line explained. No assumptions made.
+A painfully detailed guide to both scripts in this toolkit:
+
+- **`android_setup.py`** — automated installer that sets everything up from scratch
+- **`launch_emulator.py`** — launcher that boots an existing AVD with one command
+
+Every line explained. No assumptions made.
 
 ---
 
 ## Table of Contents
 
-- [What the Script Does](#what-the-script-does)
-- [Requirements](#requirements)
-- [Getting the Script](#getting-the-script)
-- [Making the Script Executable](#making-the-script-executable)
-- [The CONFIG Block](#the-config-block)
-  - [ANDROID_HOME](#android_home)
-  - [ANDROID_AVD_HOME](#android_avd_home)
-  - [AVD_NAME](#avd_name)
-  - [SCALE](#scale)
-  - [EXTRA_FLAGS](#extra_flags)
-- [Running the Script](#running-the-script)
-- [What Happens When You Run It](#what-happens-when-you-run-it)
-- [Sanity Checks Explained](#sanity-checks-explained)
-- [Extra Flags Reference](#extra-flags-reference)
-- [Common Errors and Fixes](#common-errors-and-fixes)
-- [Tips and Customization](#tips-and-customization)
+- [android_setup.py — The Automated Installer](#android_setuppy--the-automated-installer)
+  - [What it Does](#what-it-does)
+  - [Requirements](#requirements-for-android_setuppy)
+  - [Running the Installer](#running-the-installer)
+  - [Interactive Walkthrough](#interactive-walkthrough)
+  - [What it Writes to Your System](#what-it-writes-to-your-system)
+  - [After the Installer Finishes](#after-the-installer-finishes)
+- [launch_emulator.py — The Launcher](#launch_emulatorpy--the-launcher)
+  - [What the Script Does](#what-the-script-does)
+  - [Requirements](#requirements)
+  - [Getting the Script](#getting-the-script)
+  - [Making the Script Executable](#making-the-script-executable)
+  - [The CONFIG Block](#the-config-block)
+    - [ANDROID_HOME](#android_home)
+    - [ANDROID_AVD_HOME](#android_avd_home)
+    - [AVD_NAME](#avd_name)
+    - [SCALE](#scale)
+    - [EXTRA_FLAGS](#extra_flags)
+  - [Running the Script](#running-the-script)
+  - [What Happens When You Run It](#what-happens-when-you-run-it)
+  - [Sanity Checks Explained](#sanity-checks-explained)
+  - [Extra Flags Reference](#extra-flags-reference)
+  - [Common Errors and Fixes](#common-errors-and-fixes)
+  - [Tips and Customization](#tips-and-customization)
 
 ---
 
-## What the Script Does
+## android_setup.py — The Automated Installer
+
+### What it Does
+
+`android_setup.py` is a fully interactive installer that automates the entire Android emulation setup process from scratch. Running it is the equivalent of following every step in the main setup guide, but without having to type any of the commands yourself.
+
+In order, it:
+
+1. Checks that Java, unzip, wget, and KVM are available
+2. Asks where you want to install the SDK
+3. Downloads platform-tools and cmdline-tools from Google
+4. Extracts and restructures the directory layout
+5. Accepts all SDK licenses automatically
+6. Lets you choose any Android version (API 21 through 34) from a numbered menu
+7. Lets you choose the system image type (default / google_apis / google_apis_playstore)
+8. Installs the chosen system image
+9. Installs the emulator binary
+10. Lets you choose a device profile (Phone, Tablet, or Custom)
+11. Asks you to name your virtual device
+12. Creates the AVD
+13. Writes `config.ini` with your display settings, keyboard enabled, camera disabled
+14. Updates your `~/.bashrc` and `~/.zshrc` with the correct environment variables
+15. Prints a summary and offers to launch the emulator immediately
+
+---
+
+### Requirements for android_setup.py
+
+The script itself needs nothing beyond Python 3 and a working internet connection. It handles everything else. However, it does check for the following and will tell you exactly what to install if anything is missing:
+
+| Requirement | Why |
+|---|---|
+| Python 3 | To run the script itself |
+| Java (OpenJDK 11+) | Required by the Android SDK tools |
+| `unzip` | To extract the downloaded zip files |
+| `wget` | Used internally by sdkmanager |
+| Internet connection | To download SDK packages from Google |
+| KVM (recommended) | For hardware-accelerated emulation |
+
+---
+
+### Running the Installer
+
+Make the script executable, then run it:
+
+```bash
+chmod +x android_setup.py
+python3 android_setup.py
+```
+
+That's it. The script takes over from there and guides you through every decision interactively. The whole process takes 5–15 minutes depending on your internet speed and which system image you choose.
+
+---
+
+### Interactive Walkthrough
+
+Here is every prompt you will see, in order, with an explanation of what each one means and what to enter.
+
+---
+
+**Ready to begin? [Y/n]**
+
+Confirms you want to start. Press Enter to accept the default yes.
+
+---
+
+**Install directory [~/android-sdk]:**
+
+Where the Android SDK files will be downloaded and stored. The default `~/android-sdk` is fine for most people. If you want it somewhere else (e.g. an external drive), enter the full path here.
+
+> The directory will be created if it doesn't exist. If it already exists and isn't empty, the script will warn you and ask if you want to continue.
+
+---
+
+**Which Android version do you want to emulate?**
+
+A numbered list of every Android version from 5.0 (API 21) to 14 (API 34). Enter the number next to the version you want.
+
+If you're unsure, a quick reference:
+
+| Choice | Best for |
+|---|---|
+| Android 9 (API 28) | Low-end machines, widest app compatibility |
+| Android 12 (API 31) | Good balance of modern features and performance |
+| Android 14 (API 34) | Latest features, most resource-intensive |
+
+---
+
+**Which system image type do you want?**
+
+Three options are presented:
+
+- `default` — no Google apps at all. Lightest option. Best for development and testing.
+- `google_apis` — includes Google Play Services and Google APIs, but no Play Store. Good middle ground.
+- `google_apis_playstore` — full Play Store included. Heaviest. Note: the system partition is not writable with this tag.
+
+---
+
+**What kind of device do you want to emulate?**
+
+Three options:
+
+- **Phone** — portrait orientation, 1080×1920, density 420. Standard smartphone layout.
+- **Tablet** — landscape orientation, 2560×1600, density 320. 10.1 inch screen size.
+- **Custom** — you enter width, height, density, orientation, and screen size manually.
+
+---
+
+**Name your virtual device (no spaces) [android-28]:**
+
+The name used to identify this AVD. It defaults to `android-<API_LEVEL>` (e.g. `android-28`). You can name it anything you like as long as it has no spaces. This name is what you'll use in `launch_emulator.py`'s `AVD_NAME` setting.
+
+---
+
+**Launch the emulator now? [Y/n]**
+
+After everything is installed and configured, the script offers to boot the emulator immediately. If you say yes, it launches in the background and you can continue using your terminal. If you say no, you can launch it later using `launch_emulator.py` or the manual command printed in the summary.
+
+---
+
+### What it Writes to Your System
+
+The installer makes the following changes to your system:
+
+**Files created in your SDK directory:**
+```
+~/android-sdk/
+├── cmdline-tools/latest/    ← sdkmanager, avdmanager
+├── platform-tools/          ← adb and friends
+├── emulator/                ← the emulator binary
+├── system-images/           ← the Android OS image you chose
+└── platforms/               ← required empty directory
+```
+
+**AVD files created in your home directory:**
+```
+~/.android/avd/
+├── <avd-name>.ini
+└── <avd-name>.avd/
+    ├── config.ini           ← your display/hardware settings
+    └── userdata.img
+```
+
+**Lines appended to `~/.bashrc` and `~/.zshrc` (if they exist):**
+```bash
+# Android SDK — added by android_setup.py
+export ANDROID_HOME=~/android-sdk
+export ANDROID_AVD_HOME=~/.android/avd/
+export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+export PATH=$PATH:$ANDROID_HOME/emulator
+```
+
+> The script checks for its own marker comment before writing, so running it multiple times will not create duplicate entries.
+
+---
+
+### After the Installer Finishes
+
+Once the installer completes, do the following:
+
+**1. Reload your shell config:**
+
+```bash
+source ~/.bashrc
+```
+
+**2. Verify tools are accessible:**
+
+```bash
+sdkmanager --version
+avdmanager list avd
+adb --version
+```
+
+**3. Configure `launch_emulator.py`:**
+
+At the end of the installer output, a summary block is printed that looks like this:
+
+```
+Or use launch_emulator.py with these settings:
+
+   ANDROID_HOME     = "/home/musa/android-sdk"
+   ANDROID_AVD_HOME = "/home/musa/.android/avd/"
+   AVD_NAME         = "android-28"
+```
+
+Copy those exact values into the CONFIG block at the top of `launch_emulator.py`. See the [CONFIG Block](#the-config-block) section below for full details on each setting.
+
+---
+
+## launch_emulator.py — The Launcher
+
+### What the Script Does
 
 In plain English, the script does four things in order:
 
