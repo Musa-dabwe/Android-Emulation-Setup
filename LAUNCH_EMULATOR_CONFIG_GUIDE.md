@@ -1,6 +1,6 @@
 # launch_emulator.py — Configuration Guide
 
-A painfully detailed guide to configuring, understanding, and running the `launch_emulator.py` script. Every line explained. No assumptions made.
+A very detailed guide to configuring, understanding, and running the `launch_emulator.py` script. Every line explained. No assumptions made.
 
 ---
 
